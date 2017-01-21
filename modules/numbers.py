@@ -44,38 +44,32 @@ class NumbersWithHIghChanceOfWinning:
                 list_ganhadores_quina += [int(ganhadores_quina)]
                 list_ganhadores_quadra += [int(ganhadores_quadra)]
 
-        mega_sena = {'concursos': concursos,
-                     'datas': datas,
-                     'numeros_1': numeros_1,
-                     'numeros_2': numeros_2,
-                     'numeros_3': numeros_3,
-                     'numeros_4': numeros_4,
-                     'numeros_5': numeros_5,
-                     'numeros_6': numeros_6,
-                     'list_ganhadores_sena': list_ganhadores_sena,
-                     'list_ganhadores_quina': list_ganhadores_quina,
-                     'list_ganhadores_quadra': list_ganhadores_quadra}
+        mega_sena = pd.DataFrame({'datas': datas,
+                                  'numeros_1': numeros_1,
+                                  'numeros_2': numeros_2,
+                                  'numeros_3': numeros_3,
+                                  'numeros_4': numeros_4,
+                                  'numeros_5': numeros_5,
+                                  'numeros_6': numeros_6,
+                                  'list_ganhadores_sena': list_ganhadores_sena,
+                                  'list_ganhadores_quina': list_ganhadores_quina,
+                                  'list_ganhadores_quadra': list_ganhadores_quadra}, index=concursos)
 
-        # megas_sena = pd.DataFrame(mega_sena)
-        megas_sena = pd.DataFrame({'datas': datas,
-                                   'numeros_1': numeros_1,
-                                   'numeros_2': numeros_2,
-                                   'numeros_3': numeros_3,
-                                   'numeros_4': numeros_4,
-                                   'numeros_5': numeros_5,
-                                   'numeros_6': numeros_6,
-                                   'list_ganhadores_sena': list_ganhadores_sena,
-                                   'list_ganhadores_quina': list_ganhadores_quina,
-                                   'list_ganhadores_quadra': list_ganhadores_quadra}, index=concursos)
+        sequences_dict = mega_sena[['numeros_1', 'numeros_2', 'numeros_3',
+                                       'numeros_4', 'numeros_5', 'numeros_6']] \
+            .T.to_dict('list')
 
-        sena_maior_1 = megas_sena.ix[megas_sena.list_ganhadores_sena > 0]
+        for key, value in sequences_dict.items():
+            value.sort()
 
-        chance_numero_1 = sena_maior_1.groupby('numeros_1').count()['list_ganhadores_sena'].to_dict()
-        chance_numero_2 = sena_maior_1.groupby('numeros_2').count()['list_ganhadores_sena'].to_dict()
-        chance_numero_3 = sena_maior_1.groupby('numeros_3').count()['list_ganhadores_sena'].to_dict()
-        chance_numero_4 = sena_maior_1.groupby('numeros_4').count()['list_ganhadores_sena'].to_dict()
-        chance_numero_5 = sena_maior_1.groupby('numeros_5').count()['list_ganhadores_sena'].to_dict()
-        chance_numero_6 = sena_maior_1.groupby('numeros_6').count()['list_ganhadores_sena'].to_dict()
+        self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in sequences_dict.items())]
+
+        chance_numero_1 = mega_sena.groupby('numeros_1').count()['list_ganhadores_sena'].to_dict()
+        chance_numero_2 = mega_sena.groupby('numeros_2').count()['list_ganhadores_sena'].to_dict()
+        chance_numero_3 = mega_sena.groupby('numeros_3').count()['list_ganhadores_sena'].to_dict()
+        chance_numero_4 = mega_sena.groupby('numeros_4').count()['list_ganhadores_sena'].to_dict()
+        chance_numero_5 = mega_sena.groupby('numeros_5').count()['list_ganhadores_sena'].to_dict()
+        chance_numero_6 = mega_sena.groupby('numeros_6').count()['list_ganhadores_sena'].to_dict()
 
         chances = [chance_numero_1, chance_numero_2, chance_numero_3, chance_numero_4, chance_numero_5, chance_numero_6]
 
@@ -89,6 +83,3 @@ class NumbersWithHIghChanceOfWinning:
 
         for key, value in self.percentage_of_number.items():
             self.percentage_of_number[key] = float(value) / sum_all_winning
-
-
-

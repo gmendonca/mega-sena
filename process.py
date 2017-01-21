@@ -34,3 +34,5 @@ Tries to get a better chance of winning mega sena.
     numbers_module = NumbersWithHIghChanceOfWinning(mega_sena_file)
 
     print numbers_module.percentage_of_number[5]
+
+    print numbers_module.unique_sequences

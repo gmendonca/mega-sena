@@ -85,10 +85,10 @@ class NumbersWithHIghChanceOfWinning:
 
         self.percentage_of_number = dict(c)
 
-        self.sum_all_winning = sum(self.percentage_of_number)
+        sum_all_winning = sum(self.percentage_of_number)
 
         for key, value in self.percentage_of_number.items():
-            self.percentage_of_number[key] = float(value) / self.sum_all_winning
+            self.percentage_of_number[key] = float(value) / sum_all_winning
 
 
 

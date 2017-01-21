@@ -71,6 +71,7 @@ class NumbersWithHIghChanceOfWinning:
         sena_maior_1 = megas_sena.ix[megas_sena.list_ganhadores_sena > 0]
 
         chance_numero_1 = sena_maior_1.groupby('numeros_1').count()['list_ganhadores_sena'].to_dict()
+        print chance_numero_1
         chance_numero_2 = sena_maior_1.groupby('numeros_2').count()['list_ganhadores_sena'].to_dict()
         chance_numero_3 = sena_maior_1.groupby('numeros_3').count()['list_ganhadores_sena'].to_dict()
         chance_numero_4 = sena_maior_1.groupby('numeros_4').count()['list_ganhadores_sena'].to_dict()

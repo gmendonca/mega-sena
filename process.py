@@ -2,7 +2,7 @@ import sys
 import getopt
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
-from tabulate import tabulate
+from prettytable import PrettyTable
 
 if __name__ == '__main__':
 
@@ -46,11 +46,23 @@ Tries to get a better chance of winning mega sena.
     if len(args) > 0:
         results = map(int, args)
         results.sort()
-        print "Numero sorteado em: ", numbers_module.get_date_of_numbers(results)
-        for i in results:
-            print numbers_module.percentage_of_number[i],
+
+        table = PrettyTable(["Descricao", "Valor"])
+
         p = Probability(possible_numbers, max_guesses, len(args))
-        print
-        print p.sena()
-        print p.quina()
-        print p.quadra()
+        table.add_row(["Probabilidade da sena (1 em)", p.sena()])
+        table.add_row(["Probabilidade da quina (1 em)", p.quina()])
+        table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
+
+        guessed = numbers_module.get_date_of_numbers(results)
+
+        if guessed is not None:
+            table.add_row(["Sequencia ja sorteada em", guessed])
+        else:
+            print "========> Numero nunca sorteado!"
+
+        for i in results:
+            table.add_row(["Proabilidade do numero " + str(i), numbers_module.percentage_of_number[i]])
+
+        print table
+

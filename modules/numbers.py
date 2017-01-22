@@ -29,9 +29,9 @@ class NumbersWithHIghChanceOfWinning:
         for tr in rows:
             cols = tr.findAll('td')
             if len(cols) > 3:
-                concurso, data, numero_1, numero_2, numero_3, numero_4, numero_5, numero_6, arrecadacao, ganhadores_sena, \
-                cidade, uf, rateio_sena, ganhadores_quina, rateio_quina, ganhadores_quadra, rateio_quadra, acumulado, \
-                valor_acomulado, estimativa, acomulado_mega_virada = [c.text for c in cols]
+                concurso, data, numero_1, numero_2, numero_3, numero_4, numero_5, numero_6, arrecadacao, \
+                ganhadores_sena, cidade, uf, rateio_sena, ganhadores_quina, rateio_quina, ganhadores_quadra, \
+                rateio_quadra, acumulado, valor_acomulado, estimativa, acomulado_mega_virada = [c.text for c in cols]
                 concursos += [int(concurso)]
                 datas += [str(data)]
                 numeros_1 += [int(numero_1)]
@@ -81,11 +81,7 @@ class NumbersWithHIghChanceOfWinning:
 
         self.percentage_of_number = dict(c)
 
-        print self.percentage_of_number
-
-        num_of_contests = sum(self.percentage_of_number.values())/6
-
-        print num_of_contests
+        num_of_contests = sum(self.percentage_of_number.values()) / 6
 
         for key, value in self.percentage_of_number.items():
             self.percentage_of_number[key] = float(value) / num_of_contests
@@ -94,4 +90,3 @@ class NumbersWithHIghChanceOfWinning:
         for date, numbers in self.date_sequences.iteritems():
             if numbers == results:
                 return date
-

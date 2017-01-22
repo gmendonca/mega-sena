@@ -55,14 +55,16 @@ class NumbersWithHIghChanceOfWinning:
                                   'list_ganhadores_quina': list_ganhadores_quina,
                                   'list_ganhadores_quadra': list_ganhadores_quadra}, index=concursos)
 
-        sequences_dict = mega_sena[['numeros_1', 'numeros_2', 'numeros_3',
-                                       'numeros_4', 'numeros_5', 'numeros_6']] \
-            .T.to_dict('list')
+        # print mega_sena.to_dict()['numeros_1'][233]
 
-        for key, value in sequences_dict.items():
+        self.date_sequences = mega_sena[['datas', 'numeros_1', 'numeros_2', 'numeros_3',
+                                         'numeros_4', 'numeros_5', 'numeros_6']] \
+            .set_index('datas').T.to_dict('list')
+
+        for key, value in self.date_sequences.items():
             value.sort()
 
-        self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in sequences_dict.items())]
+        self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in self.date_sequences.items())]
 
         chance_numero_1 = mega_sena.groupby('numeros_1').count()['list_ganhadores_sena'].to_dict()
         chance_numero_2 = mega_sena.groupby('numeros_2').count()['list_ganhadores_sena'].to_dict()
@@ -79,7 +81,17 @@ class NumbersWithHIghChanceOfWinning:
 
         self.percentage_of_number = dict(c)
 
-        sum_all_winning = sum(self.percentage_of_number)
+        print self.percentage_of_number
+
+        num_of_contests = sum(self.percentage_of_number.values())/6
+
+        print num_of_contests
 
         for key, value in self.percentage_of_number.items():
-            self.percentage_of_number[key] = float(value) / sum_all_winning
+            self.percentage_of_number[key] = float(value) / num_of_contests
+
+    def get_date_of_numbers(self, results):
+        for date, numbers in self.date_sequences.iteritems():
+            if numbers == results:
+                return date
+

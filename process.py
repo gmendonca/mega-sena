@@ -2,6 +2,7 @@ import sys
 import getopt
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
+from tabulate import tabulate
 
 if __name__ == '__main__':
 

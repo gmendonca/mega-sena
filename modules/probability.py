@@ -24,7 +24,7 @@ class Probability:
         if self.max_guesses == self.quantity:
             return combination(self.possible_numbers, self.quantity)
         else:
-            return self.chance / combination(self.possible_numbers, self.quantity)
+            return self.chance / combination(self.quantity, self.max_guesses)
 
     def quina(self, less_quantity=5, less_difference=1):
         return self.chance / combination_less(self.quantity, less_quantity, self.difference, less_difference)

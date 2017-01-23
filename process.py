@@ -1,5 +1,7 @@
 import sys
 import getopt
+
+from modules.colors import Color
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
 from prettytable import PrettyTable
@@ -62,7 +64,13 @@ Tries to get a better chance of winning mega sena.
             print "========> Numero nunca sorteado!"
 
         for i in results:
-            table.add_row(["Proabilidade do numero " + str(i), numbers_module.percentage_of_number[i]])
+            table.add_row(["Probabilidade do numero " + str(i),
+                           "{0:.2f}%".format(numbers_module.percentage_of_number[i] * 100)])
+
+        table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
+        table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
 
         print table
+
+        Color()
 

@@ -1,7 +1,7 @@
 import sys
 import getopt
 
-from modules.colors import Color
+from modules.colors import Color, what_template
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
 from prettytable import PrettyTable
@@ -74,5 +74,7 @@ Tries to get a better chance of winning mega sena.
 
         c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
-        print c.templates[tuple(sorted(('yellow', 'light_blue', 'gray', 'green', 'pink', 'ivory')))]
+        print c.templates[what_template(results)]
+
+        # print c.templates[tuple(sorted(('yellow', 'light_blue', 'gray', 'green', 'pink', 'ivory')))]
 

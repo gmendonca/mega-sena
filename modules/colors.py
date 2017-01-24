@@ -37,7 +37,7 @@ class Color:
                 max_values += self.template_colors[i][-colors[i]:]
 
             average_sum = (sum(min_values) + sum(max_values)) / 2
-            self.templates[self.number_of_templates] = {
+            self.templates[template] = {
                 'combinations': combinations,
                 'average_sum': average_sum,
                 'calculus': "{0:.2f}".format(float(combinations)/p.combination(self.possible_numbers, self.max_guesses))

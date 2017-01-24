@@ -72,5 +72,5 @@ Tries to get a better chance of winning mega sena.
 
         print table
 
-        Color()
+        Color(possible_numbers, max_guesses)
 

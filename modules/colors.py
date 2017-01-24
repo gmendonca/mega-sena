@@ -3,9 +3,10 @@ import probability as p
 
 
 class Color:
-    def __init__(self, possible_numbers, max_guesses):
+    def __init__(self, possible_numbers, max_guesses, num_of_contests):
         self.possible_numbers = possible_numbers
         self.max_guesses = max_guesses
+        self.num_of_contests = num_of_contests
         self.template_colors = {"yellow": [i for i in range(1, 10)],
                                 "light_blue": [i for i in range(10, 20)],
                                 "gray": [i for i in range(20, 30)],
@@ -37,13 +38,12 @@ class Color:
                 max_values += self.template_colors[i][-colors[i]:]
 
             average_sum = (sum(min_values) + sum(max_values)) / 2
-            self.templates[template] = {
+            calculus = float(combinations)/p.combination(self.possible_numbers, self.max_guesses)
+
+            self.templates[tuple(sorted(template))] = {
+                'template_number': self.number_of_templates,
                 'combinations': combinations,
                 'average_sum': average_sum,
-                'calculus': "{0:.2f}".format(float(combinations)/p.combination(self.possible_numbers, self.max_guesses))
+                'calculus': float("{0:.2f}".format(100 * calculus)),
+                'expected_guesses': int(self.num_of_contests * calculus)
             }
-
-            if self.number_of_templates == 30:
-                break
-
-        print self.templates

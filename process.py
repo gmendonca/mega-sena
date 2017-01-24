@@ -72,7 +72,7 @@ Tries to get a better chance of winning mega sena.
 
         print table
 
-        c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests)
+        c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
         print c.templates[tuple(sorted(('yellow', 'light_blue', 'gray', 'green', 'pink', 'ivory')))]
 

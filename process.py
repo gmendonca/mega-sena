@@ -46,10 +46,13 @@ Tries to get a better chance of winning mega sena.
     numbers_module = NumbersWithHIghChanceOfWinning(mega_sena_file)
 
     if len(args) > 0:
+
         results = map(int, args)
         results.sort()
 
         table = PrettyTable(["Descricao", "Valor"])
+
+        table.add_row(["Soma dos numeros", sum(results)])
 
         p = Probability(possible_numbers, max_guesses, len(args))
         table.add_row(["Probabilidade da sena (1 em)", p.sena()])
@@ -70,11 +73,15 @@ Tries to get a better chance of winning mega sena.
         table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
         table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
 
+        if len(args) == 6:
+            c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
+
+            dict_templates = c.templates[what_template(results)]
+
+            for key, value in dict_templates.items():
+                table.add_row([key, value])
+
         print table
 
-        c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
-        print c.templates[what_template(results)]
-
-        # print c.templates[tuple(sorted(('yellow', 'light_blue', 'gray', 'green', 'pink', 'ivory')))]
 

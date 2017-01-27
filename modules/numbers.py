@@ -61,8 +61,15 @@ class NumbersWithHIghChanceOfWinning:
                                               'numeros_4', 'numeros_5', 'numeros_6']] \
             .set_index('datas').T.to_dict('list')
 
+        sum_values = 0
+        sum_quantity = 0
+
         for key, value in self.date_sequences.items():
+            sum_values += sum(value)
+            sum_quantity += 1
             value.sort()
+
+        self.average_total_sum = sum_values / sum_quantity
 
         self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in self.date_sequences.items())]
 

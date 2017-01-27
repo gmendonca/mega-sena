@@ -1,6 +1,8 @@
 import sys
 import getopt
 import random
+import itertools
+import operator
 
 from modules.colors import Color, what_template
 from modules.numbers import NumbersWithHIghChanceOfWinning
@@ -12,6 +14,7 @@ if __name__ == '__main__':
 
     possible_numbers = 60
     max_guesses = 6
+    how_many = 1
 
     def usage():
         print """\
@@ -22,7 +25,7 @@ Tries to get a better chance of winning mega sena.
 """
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:q:m", ["file=", "quantity=", "max="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:q:m:h", ["file=", "quantity=", "max=", "howmany="])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -37,6 +40,8 @@ Tries to get a better chance of winning mega sena.
             possible_numbers = a
         elif o in ("-m", "--max"):
             max_guesses = a
+        elif o in ("-h", "--howmany"):
+            how_many = a
         else:
             assert False, "Unhandled option"
 
@@ -54,66 +59,129 @@ Tries to get a better chance of winning mega sena.
     elif len(args) > 0:
         numbers = args
 
-    numbers_len = len(numbers)
+    if how_many == 1:
+        w = CalculateWeights()
 
-    w = CalculateWeights()
+        results = map(int, numbers)
+        results.sort()
 
-    results = map(int, numbers)
-    results.sort()
+        numbers_len = len(numbers)
 
-    table = PrettyTable(["Descricao", "Valor"])
-    table.add_row(["Sequencia", results])
+        table = PrettyTable(["Descricao", "Valor"])
+        table.add_row(["Sequencia", results])
 
-    p = Probability(possible_numbers, max_guesses, numbers_len)
-    table.add_row(["Probabilidade da sena (1 em)", p.sena()])
-    table.add_row(["Probabilidade da quina (1 em)", p.quina()])
-    table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
+        p = Probability(possible_numbers, max_guesses, numbers_len)
+        table.add_row(["Probabilidade da sena (1 em)", p.sena()])
+        table.add_row(["Probabilidade da quina (1 em)", p.quina()])
+        table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
 
-    w.weight = 1.0 / p.sena()
+        w.weight = 1.0 / p.sena()
 
-    sum_numbers = sum(results)
+        sum_numbers = sum(results)
 
-    table.add_row(["Soma dos numeros", sum_numbers])
+        table.add_row(["Soma dos numeros", sum_numbers])
 
-    w.weight *= w.close_to_average_total_sum(sum_numbers, numbers_module.average_total_sum)
+        w.weight *= w.close_to_average_total_sum(sum_numbers, numbers_module.average_total_sum)
 
-    guessed = numbers_module.get_date_of_numbers(results)
+        guessed = numbers_module.get_date_of_numbers(results)
 
-    if guessed is not None:
-        table.add_row(["Sequencia ja sorteada em", guessed])
-        w.weight *= 0
+        if guessed is not None:
+            table.add_row(["Sequencia ja sorteada em", guessed])
+            w.weight *= 0
+        else:
+            print "========> Numero nunca sorteado!"
+            w.weight *= 1
+
+        percentages = []
+
+        for i in results:
+            percentage = numbers_module.percentage_of_number[i] * 100
+            table.add_row(["Probabilidade do numero " + str(i),
+                           "{0:.2f}%".format(percentage)])
+            percentages += [percentage]
+
+        w.weight *= w.sum_of_percentages(sum(percentages))
+
+        table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
+        table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
+
+        if numbers_len == 6:
+            c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
+
+            dict_templates = c.templates[what_template(results)]
+
+            for key, value in dict_templates.items():
+                table.add_row([key, value])
+
+            w.weight *= w.template_chance(float(dict_templates['Probablidade de ocorrer'][:-1])/100)
+
+            w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Soma media']), True)
+
+        print table
+
+        print "========> Sua chance de ganhar:", "{0:.5f}%".format(w.weight)
     else:
-        print "========> Numero nunca sorteado!"
-        w.weight *= 1
+        dict_of_percentages = {}
+        for num in itertools.combinations(range(1, 60), 6):
+            w = CalculateWeights()
 
-    percentages = []
+            results = map(int, num)
+            results.sort()
 
-    for i in results:
-        percentage = numbers_module.percentage_of_number[i] * 100
-        table.add_row(["Probabilidade do numero " + str(i),
-                       "{0:.2f}%".format(percentage)])
-        percentages += [percentage]
+            numbers_len = len(num)
 
-    w.weight *= w.sum_of_percentages(sum(percentages))
+            table = PrettyTable(["Descricao", "Valor"])
+            table.add_row(["Sequencia", results])
 
-    table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
-    table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
+            p = Probability(possible_numbers, max_guesses, numbers_len)
+            table.add_row(["Probabilidade da sena (1 em)", p.sena()])
+            table.add_row(["Probabilidade da quina (1 em)", p.quina()])
+            table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
 
-    if numbers_len == 6:
-        c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
+            w.weight = 1.0 / p.sena()
 
-        dict_templates = c.templates[what_template(results)]
+            sum_numbers = sum(results)
 
-        for key, value in dict_templates.items():
-            table.add_row([key, value])
+            table.add_row(["Soma dos numeros", sum_numbers])
 
-        w.weight *= w.template_chance(float(dict_templates['Probablidade de ocorrer'][:-1])/100)
+            w.weight *= w.close_to_average_total_sum(sum_numbers, numbers_module.average_total_sum)
 
-        w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Soma media']), True)
+            guessed = numbers_module.get_date_of_numbers(results)
 
-    print table
+            if guessed is not None:
+                table.add_row(["Sequencia ja sorteada em", guessed])
+                w.weight *= 0
+            else:
+                w.weight *= 1
 
-    print "========> Sua chance de ganhar:", "{0:.5f}%".format(w.weight)
+            percentages = []
+
+            for i in results:
+                percentage = numbers_module.percentage_of_number[i] * 100
+                table.add_row(["Probabilidade do numero " + str(i),
+                               "{0:.2f}%".format(percentage)])
+                percentages += [percentage]
+
+            w.weight *= w.sum_of_percentages(sum(percentages))
+
+            table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
+            table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
+
+            if numbers_len == 6:
+                c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
+
+                dict_templates = c.templates[what_template(results)]
+
+                for key, value in dict_templates.items():
+                    table.add_row([key, value])
+
+                w.weight *= w.template_chance(float(dict_templates['Probablidade de ocorrer'][:-1]) / 100)
+
+                w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Soma media']), True)
+
+            dict_of_percentages[num] = format(w.weight)
+        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many])
+
 
 
 

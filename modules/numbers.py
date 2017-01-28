@@ -55,21 +55,23 @@ class NumbersWithHIghChanceOfWinning:
                                        'list_ganhadores_quina': list_ganhadores_quina,
                                        'list_ganhadores_quadra': list_ganhadores_quadra}, index=concursos)
 
-        self.date_sequences = self.mega_sena[['datas', 'numeros_1', 'numeros_2', 'numeros_3',
+        self.date_numbers_sequences = self.mega_sena[['datas', 'numeros_1', 'numeros_2', 'numeros_3',
                                               'numeros_4', 'numeros_5', 'numeros_6']] \
             .set_index('datas').T.to_dict('list')
 
         sum_values = 0
         sum_quantity = 0
 
-        for key, value in self.date_sequences.items():
+        for key, value in self.date_numbers_sequences.items():
             sum_values += sum(value)
             sum_quantity += 1
             value.sort()
 
         self.average_total_sum = sum_values / sum_quantity
 
-        self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in self.date_sequences.items())]
+        self.numbers_dates_sequences = {tuple(v): k for k, v in self.date_numbers_sequences.items()}
+
+        self.unique_sequences = [list(i) for i in set(tuple(j) for i, j in self.date_numbers_sequences.items())]
 
         chance_numero_1 = self.mega_sena.groupby('numeros_1').count()['list_ganhadores_sena'].to_dict()
         chance_numero_2 = self.mega_sena.groupby('numeros_2').count()['list_ganhadores_sena'].to_dict()
@@ -92,9 +94,11 @@ class NumbersWithHIghChanceOfWinning:
             self.percentage_of_number[key] = float(value) / self.num_of_contests
 
     def get_date_of_numbers(self, results):
-        for date, numbers in self.date_sequences.iteritems():
-            if numbers == results:
-                return date
+        results = tuple(results)
+        if results in self.numbers_dates_sequences:
+            return self.numbers_dates_sequences[results]
+        else:
+            return None
 
     def get_won_contests(self):
         return self.mega_sena[self.mega_sena.list_ganhadores_sena > 0]['list_ganhadores_sena'].count()

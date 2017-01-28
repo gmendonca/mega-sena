@@ -4,20 +4,13 @@ import random
 import itertools
 import operator
 import time
-
 from modules.colors import Color, what_template
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
 from prettytable import PrettyTable
 from modules.weights import CalculateWeights
 
-
 if __name__ == '__main__':
-
-    possible_numbers = 60
-    max_guesses = 6
-    how_many = 1
-
     def usage():
         print """\
 Usage: mega_sena [OPTIONS]
@@ -34,6 +27,9 @@ Tries to get a better chance of winning mega sena.
         sys.exit(2)
 
     mega_sena_file = None
+    possible_numbers = 60
+    max_guesses = 6
+    how_many = 1
 
     for o, a in opts:
         if o in ("-f", "--file"):
@@ -128,50 +124,30 @@ Tries to get a better chance of winning mega sena.
         print "========> Sua chance de ganhar:", "{0:.5f}%".format(w.weight)
     else:
         dict_of_percentages = {}
-        for num in itertools.combinations(range(1, 60), 6):
+        for num in itertools.combinations(xrange(1, 61), 6):
             w = CalculateWeights()
-
-            table = PrettyTable(["Descricao", "Valor"])
-            table.add_row(["Sequencia", results])
-
-            table.add_row(["Probabilidade da sena (1 em)", p.sena()])
-            table.add_row(["Probabilidade da quina (1 em)", p.quina()])
-            table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
 
             w.weight = 1.0 / p.sena()
 
             sum_numbers = sum(results)
-
-            table.add_row(["Soma dos numeros", sum_numbers])
 
             w.weight *= w.close_to_average_total_sum(sum_numbers, numbers_module.average_total_sum)
 
             guessed = numbers_module.get_date_of_numbers(results)
 
             if guessed is not None:
-                table.add_row(["Sequencia ja sorteada em", guessed])
                 continue
-            else:
-                w.weight *= 1
 
             percentages = []
 
             for i in results:
                 percentage = numbers_module.percentage_of_number[i] * 100
-                table.add_row(["Probabilidade do numero " + str(i),
-                               "{0:.2f}%".format(percentage)])
                 percentages += [percentage]
 
             w.weight *= w.sum_of_percentages(sum(percentages))
 
-            table.add_row(["Numero de sorteios", numbers_module.num_of_contests])
-            table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
-
             if numbers_len == 6:
                 dict_templates = c.templates[what_template(results)]
-
-                for key, value in dict_templates.items():
-                    table.add_row([key, value])
 
                 w.weight *= w.template_chance(float(dict_templates['Probablidade de ocorrer'][:-1]) / 100)
 

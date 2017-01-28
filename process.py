@@ -3,12 +3,14 @@ import getopt
 import random
 import itertools
 import operator
+import time
 
 from modules.colors import Color, what_template
 from modules.numbers import NumbersWithHIghChanceOfWinning
 from modules.probability import Probability
 from prettytable import PrettyTable
 from modules.weights import CalculateWeights
+
 
 if __name__ == '__main__':
 
@@ -51,7 +53,9 @@ Tries to get a better chance of winning mega sena.
         sys.exit(2)
 
     numbers_module = NumbersWithHIghChanceOfWinning(mega_sena_file)
+    c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
+    start_time = time.time()
     numbers = []
 
     if len(args) == 0:
@@ -59,18 +63,19 @@ Tries to get a better chance of winning mega sena.
     elif len(args) > 0:
         numbers = args
 
+    results = map(int, numbers)
+    results.sort()
+
+    numbers_len = len(numbers)
+
+    p = Probability(possible_numbers, max_guesses, numbers_len)
+
     if how_many == 1:
         w = CalculateWeights()
-
-        results = map(int, numbers)
-        results.sort()
-
-        numbers_len = len(numbers)
 
         table = PrettyTable(["Descricao", "Valor"])
         table.add_row(["Sequencia", results])
 
-        p = Probability(possible_numbers, max_guesses, numbers_len)
         table.add_row(["Probabilidade da sena (1 em)", p.sena()])
         table.add_row(["Probabilidade da quina (1 em)", p.quina()])
         table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
@@ -106,7 +111,8 @@ Tries to get a better chance of winning mega sena.
         table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
 
         if numbers_len == 6:
-            c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
+            start_time_inner = time.time()
+            print("--- Inner %s seconds ---" % (time.time() - start_time_inner))
 
             dict_templates = c.templates[what_template(results)]
 
@@ -125,15 +131,9 @@ Tries to get a better chance of winning mega sena.
         for num in itertools.combinations(range(1, 60), 6):
             w = CalculateWeights()
 
-            results = map(int, num)
-            results.sort()
-
-            numbers_len = len(num)
-
             table = PrettyTable(["Descricao", "Valor"])
             table.add_row(["Sequencia", results])
 
-            p = Probability(possible_numbers, max_guesses, numbers_len)
             table.add_row(["Probabilidade da sena (1 em)", p.sena()])
             table.add_row(["Probabilidade da quina (1 em)", p.quina()])
             table.add_row(["Probabilidade da quadra (1 em)", p.quadra()])
@@ -150,7 +150,7 @@ Tries to get a better chance of winning mega sena.
 
             if guessed is not None:
                 table.add_row(["Sequencia ja sorteada em", guessed])
-                w.weight *= 0
+                continue
             else:
                 w.weight *= 1
 
@@ -168,8 +168,6 @@ Tries to get a better chance of winning mega sena.
             table.add_row(["Sorteios com sena", numbers_module.get_won_contests()])
 
             if numbers_len == 6:
-                c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
-
                 dict_templates = c.templates[what_template(results)]
 
                 for key, value in dict_templates.items():
@@ -180,7 +178,10 @@ Tries to get a better chance of winning mega sena.
                 w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Soma media']), True)
 
             dict_of_percentages[num] = format(w.weight)
+
         print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many])
+
+    print("--- Total %s seconds ---" % (time.time() - start_time))
 
 
 

@@ -55,8 +55,6 @@ class NumbersWithHIghChanceOfWinning:
                                        'list_ganhadores_quina': list_ganhadores_quina,
                                        'list_ganhadores_quadra': list_ganhadores_quadra}, index=concursos)
 
-        # print mega_sena.to_dict()['numeros_1'][233]
-
         self.date_sequences = self.mega_sena[['datas', 'numeros_1', 'numeros_2', 'numeros_3',
                                               'numeros_4', 'numeros_5', 'numeros_6']] \
             .set_index('datas').T.to_dict('list')

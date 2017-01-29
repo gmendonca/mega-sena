@@ -20,7 +20,7 @@ Tries to get a better chance of winning mega sena.
 """
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "f:q:m:h", ["file=", "quantity=", "max=", "howmany="])
+        opts, args = getopt.getopt(sys.argv[1:], "f:q:m:h:", ["file=", "quantity=", "max=", "howmany="])
     except getopt.GetoptError, err:
         print str(err)
         usage()
@@ -123,8 +123,10 @@ Tries to get a better chance of winning mega sena.
 
         print "========> Sua chance de ganhar:", "{0:.5f}%".format(w.weight)
     else:
+        progress = 1
         dict_of_percentages = {}
         for num in itertools.combinations(xrange(1, 61), 6):
+            progress += 1
             w = CalculateWeights()
 
             w.weight = 1.0 / p.sena()
@@ -154,8 +156,9 @@ Tries to get a better chance of winning mega sena.
                 w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Soma media']), True)
 
             dict_of_percentages[num] = format(w.weight)
+            print progress
 
-        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many])
+        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:int(how_many)])
 
     print("--- Total %s seconds ---" % (time.time() - start_time))
 

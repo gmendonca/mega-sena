@@ -79,12 +79,11 @@ class Color:
             sorted_template = tuple(sorted(template))
 
             self.templates[sorted_template] = {
-                'Numero do Template': self.number_of_templates,
-                'Numero de Combinacoes': combinations,
-                'Soma media': average_sum,
-                'Probablidade de ocorrer': "{0:.2f}".format(10000 * calculus) + "%",
-                'Numero de sorteios esperados': int(self.num_of_contests * calculus),
-                'Numero de sorteios que ocorreram': self.facts[sorted_template] if sorted_template in self.facts else 0,
+                'Template number': self.number_of_templates,
+                'Number of combinations': combinations,
+                'Average sum': average_sum,
+                'Probability': "{0:.2f}".format(10000 * calculus) + "%",
+                'Number of expected draws': int(self.num_of_contests * calculus),
+                'Number of draws': self.facts[sorted_template] if sorted_template in self.facts else 0,
                 'Template': sorted_template
             }
-

@@ -1,10 +1,10 @@
 class CalculateWeights:
     def __init__(self):
         self.weight = 0.01
-        self.average_total_sum_weight = 10
-        self.average_total_sum_template_weight = 10
-        self.sum_of_percentages_weight = 10
-        self.template_chance_weight = 10
+        self.average_total_sum_weight = 1
+        self.average_total_sum_template_weight = 1
+        self.sum_of_percentages_weight = 1
+        self.template_chance_weight = 1
 
     def close_to_average_total_sum(self, sum_values, average_total_sum, color=False):
         result = (1 + (1 - abs(sum_values - average_total_sum)/float(average_total_sum)))

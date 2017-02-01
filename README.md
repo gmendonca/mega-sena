@@ -114,3 +114,7 @@ $ python process.py -f "MEGA_SENA" -m 7
 ========> Chance of winning: 0.0000003150%
 --- Total 0.0459048748016 seconds ---
 ```
+
+## Contributing
+
+The project doesn't have the intention of keep growing, it was done for some practice and out of curiosity. Feel free to fork and use it as you pleased. If you really think you have something to add, please provided a Pull Request out of you forked branch.

@@ -38,11 +38,11 @@ Tries to get a better chance of winning mega sena.
         if o in ("-f", "--file"):
             mega_sena_file = a
         elif o in ("-q", "--quantity"):
-            possible_numbers = a
+            possible_numbers = int(a)
         elif o in ("-m", "--max"):
-            max_guesses = a
+            max_guesses = int(a)
         elif o in ("-h", "--howmany"):
-            how_many = a
+            how_many = int(a)
         else:
             assert False, "Unhandled option"
 
@@ -52,13 +52,12 @@ Tries to get a better chance of winning mega sena.
         sys.exit(2)
 
     numbers_module = NumbersWithHIghChanceOfWinning(mega_sena_file)
-    c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
     start_time = time.time()
     numbers = []
 
     if len(args) == 0:
-        numbers = random.sample(range(1, 60), 6)
+        numbers = random.sample(range(1, possible_numbers), max_guesses)
     elif len(args) > 0:
         numbers = args
 
@@ -66,6 +65,8 @@ Tries to get a better chance of winning mega sena.
     results.sort()
 
     numbers_len = len(numbers)
+
+    c = Color(possible_numbers, max_guesses, numbers_module.num_of_contests, numbers_module)
 
     p = Probability(possible_numbers, max_guesses, numbers_len)
 
@@ -110,7 +111,6 @@ Tries to get a better chance of winning mega sena.
         table.add_row(["Total number of drawings with winners", numbers_module.get_won_contests()])
 
         if numbers_len == 6:
-            start_time_inner = time.time()
 
             dict_templates = c.templates[what_template(results)]
 
@@ -123,7 +123,7 @@ Tries to get a better chance of winning mega sena.
 
         print table
 
-        print "========> Sua chance de ganhar:", "{0:.10f}%".format(w.weight)
+        print "========> Chance of winning:", "{0:.10f}%".format(w.weight)
     else:
         progress = 1
         dict_of_percentages = {}
@@ -160,6 +160,6 @@ Tries to get a better chance of winning mega sena.
             dict_of_percentages[num] = format(w.weight)
             print progress
 
-        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:int(how_many)])
+        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many])
 
     print("--- Total %s seconds ---" % (time.time() - start_time))

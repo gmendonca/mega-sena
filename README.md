@@ -1,7 +1,12 @@
 # mega-sena
 
+Lottery data analysis based on the Brazilian's Lottery [Mega Sena](http://loterias.caixa.gov.br/wps/portal/loterias/landing/megasena/). I tried to make it generic as possible. However I'm still depending on the file provided by Mega Sena about past draws to get to some conclusions. I'm also using the implementation provided in this [article](http://jaguar.fcav.unesp.br/RME/fasciculos/v31/v31_n4/A7_RGiarelli.pdf), to get some insights. It still need a lot of improvements, however it can be used at least for checking if the number was already draw and some other statistics. The `MEGA_SENA` file provided is not always updated, so if you want the newest possible, download from the website.
 
-Lottery data analysis based on the Brazilian's Lottery [Mega Sena](http://loterias.caixa.gov.br/wps/portal/loterias/landing/megasena/). I tried to make it generic as possible. However I'm still depending on the file provided by Mega Sena about past draws to get to some conclusions. I'm also using the implementation provided in this [article](http://jaguar.fcav.unesp.br/RME/fasciculos/v31/v31_n4/A7_RGiarelli.pdf), to get some insights.
+## TODOs
+
+- Chance of winning doesn't consider all sequences when choosing more than `max_guess`
+- Chance of winning is not well built. It need better calculations. Eg.: Consider the expected draws and actual draws using the color lottery theory described in the article.
+- Machine Learning
 
 ## Requirements
 
@@ -83,4 +88,29 @@ $ python process.py -f "MEGA_SENA"
 +---------------------------------------+------------------------------------------------------------+
 ========> Sua chance de ganhar: 0.0000054920%
 --- Total 0.00329184532166 seconds ---
+```
+
+```
+$ python process.py -f "MEGA_SENA" -m 7
+========> Number never draw before!
++---------------------------------------+-----------------------------+
+|              Description              |            Value            |
++---------------------------------------+-----------------------------+
+|                Sequence               | [1, 14, 26, 29, 51, 52, 59] |
+|  Probability getting 6 correct (1 in) |          386206920          |
+|  Probability getting 5 correct (1 in) |            346996           |
+|  Probability getting 4 correct (1 in) |             8007            |
+|              Sequence sum             |             232             |
+|        Probability of number 1        |            10.08%           |
+|        Probability of number 14       |            9.08%            |
+|        Probability of number 26       |            8.23%            |
+|        Probability of number 29       |            10.29%           |
+|        Probability of number 51       |            11.35%           |
+|        Probability of number 52       |            10.34%           |
+|        Probability of number 59       |            9.87%            |
+|        Total number of drawings       |             1895            |
+| Total number of drawings with winners |             452             |
++---------------------------------------+-----------------------------+
+========> Chance of winning: 0.0000003150%
+--- Total 0.0459048748016 seconds ---
 ```

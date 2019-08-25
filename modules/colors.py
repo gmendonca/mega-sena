@@ -1,5 +1,5 @@
 import itertools
-import probability as p
+from .probability  import combination
 
 
 def what_color(num):
@@ -69,12 +69,12 @@ class Color:
             min_values = []
             max_values = []
             for i in colors:
-                combinations *= p.combination(len(self.template_colors[i]), colors[i])
+                combinations *= combination(len(self.template_colors[i]), colors[i])
                 min_values += self.template_colors[i][0:colors[i]]
                 max_values += self.template_colors[i][-colors[i]:]
 
             average_sum = (sum(min_values) + sum(max_values)) / 2
-            calculus = float(combinations) / p.combination(self.possible_numbers, self.max_guesses)
+            calculus = float(combinations) / combination(self.possible_numbers, self.max_guesses)
 
             sorted_template = tuple(sorted(template))
 

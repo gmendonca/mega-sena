@@ -12,7 +12,7 @@ from modules.weights import CalculateWeights
 
 if __name__ == '__main__':
     def usage():
-        print """\
+        print("""\
 Usage: python process.py [OPTIONS]
 Tries to get a better chance of winning mega sena.
    -f, --file                     Mega Sena file name
@@ -20,12 +20,12 @@ Tries to get a better chance of winning mega sena.
    -m, --max                      Total of draw numbers, defaults to 6.
    -h, --howmany                  Number of possible 6 numbers to be draw with higher probability
 
-"""
+""")
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "f:q:m:h:", ["file=", "quantity=", "max=", "howmany="])
-    except getopt.GetoptError, err:
-        print str(err)
+    except getopt.GetoptError as err:
+        print(str(err))
         usage()
         sys.exit(2)
 
@@ -47,7 +47,7 @@ Tries to get a better chance of winning mega sena.
             assert False, "Unhandled option"
 
     if not mega_sena_file:
-        print "Parameters not specified!"
+        print("Parameters not specified!")
         usage()
         sys.exit(2)
 
@@ -61,8 +61,7 @@ Tries to get a better chance of winning mega sena.
     elif len(args) > 0:
         numbers = args
 
-    results = map(int, numbers)
-    results.sort()
+    results = sorted(map(int, numbers))
 
     numbers_len = len(numbers)
 
@@ -94,7 +93,7 @@ Tries to get a better chance of winning mega sena.
             table.add_row(["Sequence already draw at", guessed])
             w.weight *= 0
         else:
-            print "========> Number never draw before!"
+            print("========> Number never draw before!")
             w.weight *= 1
 
         percentages = []
@@ -121,9 +120,9 @@ Tries to get a better chance of winning mega sena.
 
             w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Average sum']), True)
 
-        print table
+        print(table)
 
-        print "========> Chance of winning:", "{0:.10f}%".format(w.weight)
+        print("========> Chance of winning:", "{0:.10f}%".format(w.weight))
     else:
         progress = 1
         dict_of_percentages = {}
@@ -158,8 +157,8 @@ Tries to get a better chance of winning mega sena.
                 w.weight *= w.close_to_average_total_sum(sum_numbers, int(dict_templates['Average sum']), True)
 
             dict_of_percentages[num] = format(w.weight)
-            print progress
+            print(progress)
 
-        print dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many])
+        print(dict(sorted(dict_of_percentages.iteritems(), key=operator.itemgetter(1), reverse=True)[:how_many]))
 
     print("--- Total %s seconds ---" % (time.time() - start_time))

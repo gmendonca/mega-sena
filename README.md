@@ -2,6 +2,8 @@
 
 Lottery data analysis based on the Brazilian's Lottery [Mega Sena](http://loterias.caixa.gov.br/wps/portal/loterias/landing/megasena/). I tried to make it generic as possible. However I'm still depending on the file provided by Mega Sena about past draws to get to some conclusions. I'm also using the implementation provided in this [article](http://jaguar.fcav.unesp.br/RME/fasciculos/v31/v31_n4/A7_RGiarelli.pdf), to get some insights. It still need a lot of improvements, however it can be used at least for checking if the number was already draw and some other statistics. The `MEGA_SENA` file provided is not always updated, so if you want the newest possible, download from the website.
 
+You can download an updated version from [here](http://www1.caixa.gov.br/loterias/_arquivos/loterias/D_megase.zip)
+
 ## TODOs
 
 - Chance of winning doesn't consider all sequences when choosing more than `max_guess`

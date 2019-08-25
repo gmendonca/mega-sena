@@ -6,7 +6,7 @@ from collections import Counter
 
 class NumbersWithHIghChanceOfWinning:
     def __init__(self, mega_sena_file):
-        f = codecs.open(mega_sena_file, 'r')
+        f = codecs.open(mega_sena_file, 'rb')
 
         soup = BeautifulSoup(f.read(), 'html.parser')
 
